@@ -5,6 +5,7 @@ const PORT = 3001;
 const fs = require('fs');
 const db = require('./db/db.json')
 const { v4: uuidv4 } = require('uuid');
+const { json } = require('express');
 
 
 
@@ -53,11 +54,29 @@ app.get('*', (req,res)=> {
     res.sendFile(path.join(__dirname, '/public/index.html'))
 })
 
-app.post('/api/notes', (req,res)=> {
-    //should receive a new note to save on the request body,
-    // add it to the db.json file, and then return the new note to the client. 
-})
+// delete user's note by ID
+app.delete('/api/notes/:id', (req, res)=>{
+    const id = req.params.id
 
+    fs.readFile("./db/db.json", "utf8", (err, data) => {
+        if (err) {
+          console.error(err);
+        } else {
+          const jsonData = JSON.parse(data);
+          const newArray = jsonData.filter((object) => {
+            return object.id !== id;
+          });
+          
+          fs.writeFile('./db/db.json', JSON.stringify(newArray), (err)=>{
+            if(err){
+            console.log(err);
+            }
+          })
+          return res.json(req.body);
+        }
+      })
+
+})
 
 
 
