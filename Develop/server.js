@@ -4,6 +4,7 @@ const app = express();
 const PORT = 3001;
 const fs = require('fs');
 const db = require('./db/db.json')
+const { v4: uuidv4 } = require('uuid');
 
 
 
@@ -35,6 +36,7 @@ app.post('/api/notes', (req,res)=> {
           console.error(err);
         } else {
           const jsonData = JSON.parse(data);
+          req.body.id = uuidv4();
           jsonData.push(req.body);
           console.log(jsonData);
           fs.writeFile('./db/db.json', JSON.stringify(jsonData), (err)=>{
