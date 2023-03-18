@@ -17,21 +17,35 @@ app.get('/notes', (req, res)=> {
     res.sendFile(path.join(__dirname, '/public/notes.html'))
 })
 
+// read dbjson and return all saves notes as json
+app.get('/api/notes', (req, res) => {
+    fs.readFile('./db/db.json','utf8',(err,data)=>{
+        if (err) {
+            console.error(err);
+          } else {
+            return res.json(JSON.parse(data))
+          }
+    })
 
-app.get('/api/notes', (req, res) => res.json(db));
-
-// app.get('api/notes', (req,res)=> {
-//     // read dbjson and return all saves notes as json
-//     fs.readFile("db.json", "utf8", (err, data) => {
-//         if (err) {
-//           console.error(err);
-//         } else {
-//           const jsonData = JSON.parse(data);
-//           console.log(jsonData);
-//           return res.json(jsonData);
-//         }
-//       })
-// })
+})
+app.post('/api/notes', (req,res)=> {
+    
+    fs.readFile("./db/db.json", "utf8", (err, data) => {
+        if (err) {
+          console.error(err);
+        } else {
+          const jsonData = JSON.parse(data);
+          jsonData.push(req.body);
+          console.log(jsonData);
+          fs.writeFile('./db/db.json', JSON.stringify(jsonData), (err)=>{
+            if(err){
+            console.log(err);
+            }
+          })
+          return res.json(req.body);
+        }
+      })
+})
 
 app.get('*', (req,res)=> {
     res.sendFile(path.join(__dirname, '/public/index.html'))
