@@ -1,12 +1,9 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const PORT = 3001;
+const port = process.env.PORT || 3001
 const fs = require('fs');
-const db = require('./db/db.json')
 const { v4: uuidv4 } = require('uuid');
-const { json } = require('express');
-
 
 
 app.use(express.static('public'));
