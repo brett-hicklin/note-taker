@@ -1,21 +1,25 @@
+// bringing in express, path, fs, and the uuid package
 const express = require("express");
 const path = require("path");
-const app = express();
-const PORT = process.env.PORT || 3001;
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+//allows access to the public folder
 app.use(express.static("public"));
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+//a route to display the notes.html
 app.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
-// read dbjson and return all saves notes as json
+// a route read dbjson and return all saves notes as json
 app.get("/api/notes", (req, res) => {
   fs.readFile("./db/db.json", "utf8", (err, data) => {
     if (err) {
@@ -25,6 +29,7 @@ app.get("/api/notes", (req, res) => {
     }
   });
 });
+//a route for getting the user input and writing it to the db.json file to persist the data. Also assigns an unique id
 app.post("/api/notes", (req, res) => {
   fs.readFile("./db/db.json", "utf8", (err, data) => {
     if (err) {
@@ -44,6 +49,7 @@ app.post("/api/notes", (req, res) => {
   });
 });
 
+//a route that will bring a user to the index.html if they input an invalid path
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/index.html"));
 });
